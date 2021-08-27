@@ -1,0 +1,16 @@
+server: 
+  port: 8080
+
+
+spring:
+  application:
+    name: azure_app_insight_demo
+
+
+
+# Specify the instrumentation key of your Application Insights resource.
+azure:
+  application-insights:
+   #instrumentation-key: 82503fad-f44e-41c5-9a96-04f4456c1099
+    instrumentation-key: 30e1093a-9265-4480-8c5c-2b473052ed33
+# Specify the name of your spring boot application. This can be any logical name you would like to give to your app.

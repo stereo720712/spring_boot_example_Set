@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="true" scanPeriod="60 seconds" debug="true">
+
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    
+     <springProperty scope="context" name="INSTRUMENTATION_KEY"
+                    source="azure.application-insights.instrumentation-key"/>
+    
+    <!--定義日誌文件的存儲地址 勿在 LogBack 的配置中使用相對路徑-->
+	<!--  <property name="log.path" value="E:\\test\\logback.log" /> -->
+	<!-- <property name="log.path" value="/Users/chang/Desktop/CHLogs/logback.log" /> -->
+	<property name="log.path" value="./logs/" />
+	<property name="log.file" value="logback_pss"></property>
+	
+    <contextName>logback</contextName>
+    
+    
+    
+      <appender name="azure_log_record"
+              class="com.microsoft.applicationinsights.logback.ApplicationInsightsAppender">
+     <!--    <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} -%msg%n</pattern>
+        </encoder> -->
+                         
+    </appender>
+    
+     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+         <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} -%msg%n</pattern>
+        </encoder>
+    </appender>
+    
+     
+    <!--輸出到文件-->
+    <!-- 按照每天生成日誌文件 -->
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+   		<file>${log.path}/${log.file}.log</file>
+   		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<!--日誌文件輸出的文件名，如果文件名為.zip或.gz結尾，則歸檔時支持自動壓縮-->
+   			<fileNamePattern>${log.path}/%d{yyyy/MM}/${log.file}.%i.zip</fileNamePattern>
+   			<!--日誌文件保留天數-->
+   			<MaxHistory>30</MaxHistory>
+   			<!-- 最多存儲5GB日誌 -->
+   			<totalSizeCap>1GB</totalSizeCap>
+   			<!-- 每個文件最大500MB -->
+   			<maxFileSize>300MB</maxFileSize>
+   		</rollingPolicy>
+   		
+   		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+   			<!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+   			<pattern>%d{HH:mm:ss.SSS} %contextName [%thread] %-5level %logger{36} - %msg%n</pattern>
+   		</encoder>
+   		   		
+   		<!--日志文件最大的大小-->
+   		<!-- <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+   			<MaxFileSize>500MB</MaxFileSize>
+   		</triggeringPolicy> -->
+   	</appender>
+   	
+     <!--  logger class scope -->
+     <logger name="com.foxconn.basic.pss.controller" level="info"/>
+    
+    
+    <root level="info">
+        <appender-ref ref="azure_log_record" />
+        <appender-ref ref="STDOUT" /> 
+         <appender-ref ref="file" /> 
+    </root>
+    
+</configuration>
